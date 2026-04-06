@@ -1,0 +1,24 @@
+name: ONNX / ONNX Runtime
+id: onnx
+repo: https://github.com/onnx/onnx
+language_primary: C++
+language_other: [Python, Protobuf]
+category: AI Inference Framework
+maintainer: Linux Foundation AI & Data (Microsoft, Meta, etc.)
+license: Apache-2.0
+stars_approx: 17000
+description: >
+  ONNX (Open Neural Network Exchange) is both a model interchange format
+  and a C++ library for loading, validating, and executing ONNX models.
+  ONNX Runtime (github.com/microsoft/onnxruntime) is Microsoft's
+  production inference engine built on top of the format.  Both share the
+  protobuf-based TensorProto serialisation logic that has been the source
+  of path-traversal and out-of-bounds vulnerabilities.
+vuln_count: 4
+notes: >
+  The external_data field in TensorProto allows tensors to be loaded from
+  files on disk, making path-traversal bugs a recurring theme (two rounds
+  of CVEs for the same class of bug).  Additionally, ONNX Runtime 1.24.x
+  received internal security fixes for heap OOB in several operators
+  (GatherCopyData, RoiAlign, ArrayFeatureExtractor) that currently lack
+  assigned CVE numbers.

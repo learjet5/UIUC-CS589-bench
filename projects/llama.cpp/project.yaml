@@ -1,0 +1,23 @@
+name: llama.cpp
+id: llama.cpp
+repo: https://github.com/ggml-org/llama.cpp
+language_primary: C++
+language_other: [C, Python, Metal, CUDA]
+category: LLM Inference Engine
+maintainer: ggml-org (Georgi Gerganov et al.)
+license: MIT
+stars_approx: 70000
+description: >
+  A pure C/C++ inference engine for large language models (LLMs) that
+  uses the GGUF model format and the ggml tensor library.  It supports
+  CPU, GPU, and Apple Silicon backends and exposes an RPC server for
+  distributed inference.  Its popularity as a local LLM runtime and its
+  acceptance of untrusted GGUF model files make it a high-value target.
+vuln_count: 5
+notes: >
+  Two main attack surfaces emerge: (1) the GGUF model parser, which
+  loads potentially untrusted binary model files and has suffered integer
+  overflows leading to heap OOB reads/writes; (2) the experimental RPC
+  backend, whose rpc_tensor structure trusts client-supplied data and
+  pointer values, enabling write-what-where primitives.  All 2024 CVEs
+  are well-documented with public PoC scripts.

@@ -1,0 +1,43 @@
+id: GHSA-pg59-2f92-5cph
+title: "Heap buffer overflow in weighted sparse count ops"
+project: tensorflow
+
+type: heap-buffer-overflow
+cwe: CWE-122
+cwe_secondary: [CWE-20]
+
+severity: HIGH
+cvss_v3_score: 7.6
+
+affected_versions:
+  - "< 2.7.1"
+  - "2.8.x < 2.8.0"
+fixed_versions:
+  - "2.7.1"
+  - "2.8.0"
+affected_component: "tensorflow/core/kernels/count_ops.cc"
+vulnerable_function: "SparseCountSparseOutputImpl (weighted variant)"
+trigger: >
+  Invoke tf.raw_ops.RaggedCountSparseOutput() or
+  tf.raw_ops.SparseTensorDenseAdd() with a weights tensor that has fewer
+  elements than the values tensor.  The kernel iterates over values without
+  bounds-checking the weights buffer, writing or reading beyond its end.
+impact: "crash (heap-buffer-overflow); potential code execution"
+
+fix_commit: "https://github.com/tensorflow/tensorflow/commit/e3749a6d5f7d143895b2106d9aead8d814eb1e7a"
+github_advisory: GHSA-pg59-2f92-5cph
+poc_available: true
+poc_notes: "PoC in GitHub advisory."
+
+description: >
+  The weighted variants of the sparse count ops (RaggedCountSparseOutput,
+  SparseCountSparseOutput with weights) do not validate that the weights
+  tensor has the same number of elements as the values tensor.  When the
+  weights tensor is shorter, the kernel accesses heap memory beyond the
+  end of the weights buffer for each excess value element, causing a
+  heap-buffer-overflow that crashes TensorFlow and could potentially be
+  exploited for code execution.
+
+references:
+  - "https://github.com/advisories/GHSA-pg59-2f92-5cph"
+  - "https://github.com/tensorflow/tensorflow/security/advisories/GHSA-pg59-2f92-5cph"

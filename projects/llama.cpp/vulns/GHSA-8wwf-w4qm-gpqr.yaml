@@ -1,0 +1,45 @@
+id: GHSA-8wwf-w4qm-gpqr
+title: "Buffer overflow in vocabulary loading via malicious GGUF model"
+project: llama.cpp
+
+type: heap-buffer-overflow
+cwe: CWE-122
+cwe_secondary: [CWE-20]
+
+severity: HIGH
+cvss_v3_score: 8.1
+
+affected_versions:
+  - "< b4455"
+fixed_versions:
+  - "b4455"
+affected_component: "src/llama.cpp"
+vulnerable_function: "llama_vocab::impl::token_to_piece"
+trigger: >
+  Load a GGUF model file whose vocabulary section contains token strings with
+  crafted lengths that exceed the expected maximum.  The token_to_piece()
+  function copies token bytes into a fixed-size output buffer without checking
+  the token string length, causing a heap buffer overflow.
+impact: >
+  Heap buffer overflow during model loading;
+  potential arbitrary code execution triggered by opening a malicious .gguf file.
+
+fix_commit: "https://github.com/ggml-org/llama.cpp/commit/b4455"
+github_advisory: GHSA-8wwf-w4qm-gpqr
+poc_available: true
+poc_notes: >
+  Requires a crafted .gguf model file.  Triggered at model load time before
+  any inference takes place.
+
+description: >
+  When llama.cpp loads a GGUF model file, it reads vocabulary token strings
+  and passes them through token_to_piece() for normalisation.  The function
+  uses a fixed-size destination buffer without validating the source token
+  length, so a token string longer than the buffer size causes a heap-buffer-
+  overflow.  An attacker who can convince a user to open a malicious .gguf
+  file (e.g., downloaded from a public model repository) can trigger this
+  vulnerability during model loading.
+
+references:
+  - "https://github.com/ggml-org/llama.cpp/security/advisories/GHSA-8wwf-w4qm-gpqr"
+  - "https://github.com/advisories/GHSA-8wwf-w4qm-gpqr"

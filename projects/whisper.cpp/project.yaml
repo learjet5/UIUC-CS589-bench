@@ -1,0 +1,22 @@
+name: whisper.cpp
+id: whisper.cpp
+repo: https://github.com/ggml-org/whisper.cpp
+language_primary: C++
+language_other: [C, Python, Metal, CUDA]
+category: Speech Recognition Engine
+maintainer: ggml-org (Georgi Gerganov et al.)
+license: MIT
+stars_approx: 36000
+description: >
+  A high-performance C/C++ port of OpenAI's Whisper automatic speech
+  recognition model.  It shares the ggml tensor library with llama.cpp
+  and uses the GGUF model format.  The project targets edge deployment
+  and exposes a simple C API and command-line interface for audio
+  transcription.
+vuln_count: 4
+notes: >
+  whisper.cpp shares ggml as its tensor backend, meaning GGUF parser
+  vulnerabilities can affect both llama.cpp and whisper.cpp.  Additional
+  bugs have been found in the audio I/O routines (read_audio_data) and
+  the GGUF loader.  CVE-2025-14569 is the first formally assigned CVE
+  for whisper.cpp itself.

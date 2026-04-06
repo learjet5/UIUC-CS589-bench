@@ -1,0 +1,45 @@
+id: TALOS-2024-1913
+title: "Heap-based buffer overflow in gguf_fread_str via integer overflow"
+project: llama.cpp
+
+type: heap-buffer-overflow
+cwe: CWE-122
+cwe_secondary: [CWE-190]
+
+severity: HIGH
+cvss_v3_score: 7.8
+
+affected_versions:
+  - "llama.cpp versions before the fix in gguf parsing (approx. < b3261)"
+fixed_versions:
+  - "Patched in ggml after Cisco Talos disclosure"
+affected_component: "ggml/src/gguf.cpp"
+vulnerable_function: "gguf_fread_str"
+trigger: >
+  Supply a crafted .gguf file whose string header declares a length n such
+  that (n + 1) overflows when used in the size calculation for the allocation.
+  The heap allocation is smaller than required, and the subsequent
+  fread() fills the buffer with n bytes, overwriting heap metadata.
+impact: >
+  Heap buffer overflow; potential arbitrary code execution when loading
+  any application that uses the ggml GGUF loading routine.
+
+fix_commit: ""
+github_advisory: ""
+poc_available: false
+poc_notes: >
+  Cisco Talos advisory TALOS-2024-1913.  No public PoC; vulnerability
+  confirmed via fuzzing by Talos researchers.
+
+description: >
+  The gguf_fread_str() function in ggml reads the length of a string field
+  from the GGUF file header and allocates p->n + 1 bytes.  If p->n equals
+  SIZE_MAX (or the maximum value for the field type), the p->n + 1 addition
+  overflows to zero or a small value, resulting in an undersized heap buffer.
+  The subsequent fread() then writes p->n bytes into this undersized buffer,
+  causing a heap-buffer-overflow.  Because ggml is shared between llama.cpp
+  and whisper.cpp, this affects both projects.
+
+references:
+  - "https://talosintelligence.com/vulnerability_reports/TALOS-2024-1913"
+  - "https://vulners.com/talos/TALOS-2024-1913"

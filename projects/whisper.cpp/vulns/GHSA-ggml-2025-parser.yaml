@@ -1,0 +1,48 @@
+id: GHSA-ggml-2025-parser
+title: "Out-of-bounds read in ggml tensor metadata parsing"
+project: whisper.cpp
+
+# NOTE: No CVE or formal GHSA has been assigned as of April 2026.
+# This entry tracks a class of OOB-read bugs discovered by OSS-Fuzz in the
+# ggml tensor metadata parsing path that affects whisper.cpp model loading.
+# Internal tracking ID used until an official ID is assigned.
+
+type: out-of-bounds-read
+cwe: CWE-125
+cwe_secondary: [CWE-20]
+
+severity: MEDIUM
+cvss_v3_score: 5.5
+
+affected_versions:
+  - "whisper.cpp versions before ggml parser hardening (approx < 1.7.0)"
+fixed_versions:
+  - "Incrementally hardened across multiple ggml commits"
+affected_component: "ggml/src/gguf.cpp"
+vulnerable_function: "gguf_init_from_file (tensor dimension parsing)"
+trigger: >
+  Open a GGUF whisper model whose tensor header specifies a n_dims value
+  larger than GGML_MAX_DIMS, or specifies ne[] entries that overflow when
+  multiplied.  The parser reads tensor dimension data at offsets past the
+  end of the allocated header buffer.
+impact: >
+  Out-of-bounds read during model loading; potential crash or information
+  disclosure of memory adjacent to the model header buffer.
+
+fix_commit: "Multiple incremental ggml commits"
+github_advisory: ""
+poc_available: false
+poc_notes: >
+  OSS-Fuzz corpus entry.  Crafted GGUF file required; no standalone PoC.
+
+description: >
+  The ggml GGUF model header parser reads n_dims and ne[] (dimension sizes)
+  from untrusted model files without fully validating that n_dims is within
+  GGML_MAX_DIMS or that the product of ne[] values is representable without
+  overflow.  When whisper.cpp loads such a malformed model, the parser
+  can read beyond the end of the allocated header region.  This issue has
+  been addressed incrementally across multiple ggml hardening commits.
+
+references:
+  - "https://github.com/ggml-org/whisper.cpp/security"
+  - "https://github.com/ggml-org/llama.cpp/security/advisories/GHSA-vgg9-87g3-85w8"
