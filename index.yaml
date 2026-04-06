@@ -1,0 +1,200 @@
+# UIUC-CS589 Vulnerability Benchmark — Master Index
+# Last updated: 2026-04-06
+#
+# 6 AI-ecosystem C/C++ projects, 30 vulnerability entries total.
+# See schema/ for field definitions.
+
+projects:
+  - id: tensorflow
+    name: TensorFlow
+    repo: https://github.com/tensorflow/tensorflow
+    category: AI Training Framework
+    maintainer: Google
+    vuln_count: 8
+    vulns:
+      - id: CVE-2022-21740
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap overflow in SparseCountSparseOutput via invalid input rank"
+      - id: CVE-2022-29210
+        type: heap-buffer-overflow
+        severity: MEDIUM
+        title: "Heap buffer overflow in TensorKey hash function"
+      - id: CVE-2022-35939
+        type: out-of-bounds-write
+        severity: HIGH
+        title: "OOB write in TFLite scatter_nd via crafted tensor shapes"
+      - id: CVE-2022-41910
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap overflow in QuantizeAndDequantizeV2 integer type confusion"
+      - id: GHSA-pg59-2f92-5cph
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap buffer overflow in weighted sparse count ops"
+      - id: GHSA-v6r6-84gr-92rm
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap buffer overflow in AvgPool3DGrad via mismatched tensor shapes"
+      - id: CVE-2023-25664
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap buffer overflow in AvgPoolGrad via crafted tensor"
+      - id: CVE-2023-25668
+        type: out-of-bounds-read
+        severity: HIGH
+        title: "Heap OOB read in QuantizeAndDequantize with mismatched axis"
+
+  - id: pytorch
+    name: PyTorch
+    repo: https://github.com/pytorch/pytorch
+    category: AI Training Framework
+    maintainer: Meta
+    vuln_count: 4
+    vulns:
+      - id: CVE-2024-31580
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap buffer overflow in vararg_functions.cpp via crafted input"
+      - id: CVE-2024-31583
+        type: use-after-free
+        severity: HIGH
+        title: "Use-after-free in mobile JIT interpreter via invalid bytecode index"
+      - id: CVE-2024-31584
+        type: out-of-bounds-read
+        severity: HIGH
+        title: "Out-of-bounds read in torch.linalg via negative tensor dimension"
+      - id: CVE-2024-48063
+        type: deserialization-rce
+        severity: CRITICAL
+        title: "Arbitrary code execution via RemoteModule deserialization"
+
+  - id: llama.cpp
+    name: llama.cpp
+    repo: https://github.com/ggml-org/llama.cpp
+    category: LLM Inference Engine
+    maintainer: ggml-org
+    vuln_count: 5
+    vulns:
+      - id: CVE-2024-42477
+        type: out-of-bounds-read
+        severity: HIGH
+        title: "Global buffer overflow in ggml_type_size via untrusted rpc_tensor.type"
+      - id: CVE-2024-42479
+        type: write-what-where
+        severity: CRITICAL
+        title: "Write-what-where via unsafe data pointer in rpc_tensor"
+      - id: GHSA-vgg9-87g3-85w8
+        type: integer-overflow
+        severity: HIGH
+        title: "Integer overflow in GGUF parser leads to heap OOB read/write"
+      - id: GHSA-8wwf-w4qm-gpqr
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Buffer overflow in vocabulary loading via malicious GGUF model"
+      - id: TALOS-2024-1913
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap-based buffer overflow in gguf_fread_str via integer overflow"
+
+  - id: onnx
+    name: "ONNX / ONNX Runtime"
+    repo: https://github.com/onnx/onnx
+    category: AI Inference Framework
+    maintainer: "Linux Foundation AI & Data"
+    vuln_count: 4
+    vulns:
+      - id: CVE-2022-25882
+        type: path-traversal
+        severity: HIGH
+        title: "Path traversal via tensor proto external_data field"
+      - id: CVE-2024-27318
+        type: path-traversal
+        severity: HIGH
+        title: "Path traversal patch bypass in external tensor data loader"
+      - id: CVE-2024-5187
+        type: arbitrary-file-write
+        severity: HIGH
+        title: "Arbitrary file overwrite in download_model_with_test_data"
+      - id: ORT-2024-HIDDENLAYER
+        type: out-of-bounds-read
+        severity: MEDIUM
+        title: "OOB read in ONNX Runtime due to missing string termination"
+
+  - id: opencv
+    name: OpenCV
+    repo: https://github.com/opencv/opencv
+    category: Computer Vision Library
+    maintainer: "OpenCV Foundation"
+    vuln_count: 5
+    vulns:
+      - id: CVE-2019-5063
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap buffer overflow in data structure persistence via crafted JSON"
+      - id: CVE-2019-5064
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap buffer overflow in data structure persistence via crafted XML"
+      - id: CVE-2023-2617
+        type: null-ptr-deref
+        severity: MEDIUM
+        title: "Null pointer dereference in wechat_qrcode via crafted QR code"
+      - id: CVE-2023-2618
+        type: memory-leak
+        severity: MEDIUM
+        title: "Memory leak in wechat_qrcode decodeHanziSegment"
+      - id: CVE-2025-53644
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Uninitialized stack pointer leads to heap buffer write when reading crafted JPEG"
+
+  - id: whisper.cpp
+    name: whisper.cpp
+    repo: https://github.com/ggml-org/whisper.cpp
+    category: Speech Recognition Engine
+    maintainer: ggml-org
+    vuln_count: 4
+    vulns:
+      - id: CVE-2025-14569
+        type: use-after-free
+        severity: MEDIUM
+        title: "Use-after-free in read_audio_data in common-whisper.cpp"
+      - id: TALOS-2024-1914
+        type: heap-buffer-overflow
+        severity: HIGH
+        title: "Heap-based buffer overflow in GGUF string loader shared with whisper.cpp"
+      - id: GHSA-ggml-2025-parser
+        type: out-of-bounds-read
+        severity: MEDIUM
+        title: "Out-of-bounds read in ggml tensor metadata parsing"
+      - id: TALOS-2024-1914B
+        type: stack-buffer-overflow
+        severity: HIGH
+        title: "Stack buffer overflow in whisper_full_parallel via oversized audio segment"
+
+# Summary statistics
+stats:
+  total_projects: 6
+  total_vulns: 30
+  by_type:
+    heap-buffer-overflow: 12
+    out-of-bounds-read: 4
+    out-of-bounds-write: 1
+    use-after-free: 2
+    integer-overflow: 1
+    write-what-where: 1
+    deserialization-rce: 1
+    path-traversal: 2
+    arbitrary-file-write: 1
+    memory-leak: 1
+    null-ptr-deref: 1
+    stack-buffer-overflow: 1
+    other: 2
+  by_severity:
+    CRITICAL: 2
+    HIGH: 21
+    MEDIUM: 7
+    LOW: 0
+  with_cve: 22
+  without_cve: 8
