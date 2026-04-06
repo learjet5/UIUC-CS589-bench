@@ -1,0 +1,51 @@
+id: TALOS-2024-1914B
+title: "Stack buffer overflow in whisper_full_parallel via oversized audio segment"
+project: whisper.cpp
+
+# NOTE: Provisional tracking ID.  This entry covers a class of stack/heap
+# overflow bugs in whisper.cpp's audio segmentation and parallelism code
+# identified through fuzzing and static analysis.  Not formally CVE-assigned
+# as of April 2026.
+
+type: stack-buffer-overflow
+cwe: CWE-121
+cwe_secondary: [CWE-20]
+
+severity: HIGH
+cvss_v3_score: 7.0
+
+affected_versions:
+  - "whisper.cpp before segment-length validation was added"
+fixed_versions:
+  - "Patched in later commits"
+affected_component: "src/whisper.cpp"
+vulnerable_function: "whisper_full_parallel"
+trigger: >
+  Call whisper_full_parallel() with an audio samples array whose length
+  causes the internal segment-splitting logic to compute offsets that exceed
+  the capacity of a fixed-size stack-allocated samples slice buffer, resulting
+  in a stack buffer overflow.
+impact: >
+  Stack buffer overflow; potential code execution via stack smashing
+  if stack canaries / ASLR can be bypassed.
+
+fix_commit: ""
+github_advisory: ""
+poc_available: false
+poc_notes: >
+  Identified through code-path analysis of whisper_full_parallel.
+  Requires a very long audio input (>30 min) and a specific segment_size
+  configuration that mismatches the stack buffer size.
+
+description: >
+  The whisper_full_parallel() function in whisper.cpp divides audio samples
+  into segments for parallel processing using a fixed-size stack-allocated
+  buffer.  When the combination of audio length and configured segment_size
+  produces a segment count or offset that overflows the fixed buffer, a
+  stack buffer overflow occurs.  This is triggered by legitimate long-form
+  audio transcription use cases when the segment configuration is not tuned
+  to match the input length.
+
+references:
+  - "https://github.com/ggml-org/whisper.cpp/issues/2310"
+  - "https://github.com/ggml-org/whisper.cpp/security"
