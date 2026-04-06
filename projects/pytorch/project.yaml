@@ -1,0 +1,21 @@
+name: PyTorch
+id: pytorch
+repo: https://github.com/pytorch/pytorch
+language_primary: C++
+language_other: [Python, CUDA, Objective-C]
+category: AI Training Framework
+maintainer: Meta (Facebook)
+license: BSD-3-Clause
+stars_approx: 82000
+description: >
+  A widely-used deep learning framework with a Python-first design and a
+  C++ backend (libtorch).  The C++ core implements tensor operations,
+  the JIT compiler, autograd engine, and distributed training primitives.
+  Memory safety vulnerabilities have been found in the JIT interpreter,
+  tensor reshape routines, and the distributed RPC subsystem.
+vuln_count: 4
+notes: >
+  PyTorch's mobile JIT interpreter and the distributed RPC framework have
+  been the primary sources of memory safety issues in recent CVEs.  The
+  library's wide adoption in production AI workloads increases the
+  real-world impact of these vulnerabilities.
