@@ -1,0 +1,46 @@
+id: TALOS-2024-1914
+title: "Heap-based buffer overflow in GGUF string loader shared with whisper.cpp"
+project: whisper.cpp
+
+type: heap-buffer-overflow
+cwe: CWE-122
+cwe_secondary: [CWE-190]
+
+severity: HIGH
+cvss_v3_score: 7.8
+
+affected_versions:
+  - "whisper.cpp versions sharing affected ggml GGUF loader (before patch)"
+fixed_versions:
+  - "Fixed after Cisco Talos disclosure (ggml patch propagated)"
+affected_component: "ggml/src/gguf.cpp (shared with llama.cpp)"
+vulnerable_function: "gguf_fread_str"
+trigger: >
+  Load a GGUF whisper model file (.bin converted to GGUF) whose string
+  metadata field declares a length that causes an integer overflow in the
+  (p->n + 1) heap size calculation, resulting in an undersized allocation
+  followed by an oversized fread().
+impact: >
+  Heap buffer overflow; potential arbitrary code execution when opening a
+  malicious GGUF model file.
+
+fix_commit: ""
+github_advisory: ""
+poc_available: false
+poc_notes: >
+  Companion to TALOS-2024-1913 (same root cause in llama.cpp).
+  Cisco Talos reported the ggml bug as affecting both llama.cpp and
+  whisper.cpp since both share the gguf.cpp implementation.
+
+description: >
+  Cisco Talos discovered a heap-based buffer overflow in the GGUF model loader
+  (gguf_fread_str) that is shared between llama.cpp and whisper.cpp via the
+  ggml library.  When whisper.cpp loads a GGUF-format speech recognition model,
+  the same integer overflow in (p->n + 1) triggers an undersized heap
+  allocation.  The subsequent fread() fills p->n bytes into the smaller buffer,
+  overflowing it.  This is tracked separately from TALOS-2024-1913 because
+  the affected application is whisper.cpp rather than llama.cpp.
+
+references:
+  - "https://talosintelligence.com/vulnerability_reports/TALOS-2024-1914"
+  - "https://github.com/ggml-org/llama.cpp/security/advisories/GHSA-vgg9-87g3-85w8"
