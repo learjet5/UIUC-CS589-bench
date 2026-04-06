@@ -1,0 +1,22 @@
+name: TensorFlow
+id: tensorflow
+repo: https://github.com/tensorflow/tensorflow
+language_primary: C++
+language_other: [Python, CUDA, Go]
+category: AI Training Framework
+maintainer: Google
+license: Apache-2.0
+stars_approx: 185000
+description: >
+  An end-to-end open source machine learning platform. The core runtime,
+  op kernels, and graph execution engine are all implemented in C++.
+  Python serves as the primary high-level API but the C++ runtime is the
+  attack surface for memory safety issues.
+vuln_count: 8
+notes: >
+  TensorFlow published a very large batch of security advisories in 2022
+  (TF 2.7-2.9 era) and again in 2023 (TF 2.11-2.12).  Almost all are
+  heap memory bugs in individual op-kernel implementations triggered by
+  crafted tensor shapes or values.  This makes TF an ideal benchmark
+  target: bugs are well-documented, reproducible with small Python
+  snippets, and the C++ source is publicly available.
