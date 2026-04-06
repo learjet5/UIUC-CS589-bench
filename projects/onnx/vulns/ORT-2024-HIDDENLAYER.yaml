@@ -1,0 +1,45 @@
+id: ORT-2024-HIDDENLAYER
+title: "Out-of-bounds read in ONNX Runtime due to missing string termination in assert"
+project: onnx
+
+# NOTE: This issue was disclosed by HiddenLayer (February 2024) as part of
+# their "SAI Security Advisory 2024-02-onnx" report.  No CVE number has been
+# publicly assigned as of the collection date (April 2026).
+# Tracked here under a provisional internal ID.
+
+type: out-of-bounds-read
+cwe: CWE-125
+cwe_secondary: [CWE-131]
+
+severity: MEDIUM
+cvss_v3_score: 6.5
+
+affected_versions:
+  - "ONNX Runtime before the fix (exact version TBD; disclosed Feb 2024)"
+fixed_versions:
+  - "Fixed in ONNX Runtime post-1.17.x"
+affected_component: "onnxruntime/core/framework/  (operator implementation)"
+vulnerable_function: "Assertion / string comparison helper in ORT operator validation"
+trigger: >
+  Supply an ONNX model with an operator node whose string attribute lacks a
+  null terminator.  The ORT string comparison or assertion code reads past the
+  end of the attribute buffer, producing an OOB read.
+impact: "crash (OOB read); potential information disclosure"
+
+fix_commit: ""
+github_advisory: ""
+poc_available: false
+poc_notes: >
+  Disclosed by HiddenLayer in their SAI Security Advisory 2024-02-onnx.
+  Full technical details and PoC reserved; no public PoC as of April 2026.
+
+description: >
+  HiddenLayer's AI Security research team identified an out-of-bounds read
+  vulnerability in Microsoft ONNX Runtime caused by the absence of a null
+  terminator on a string used in an assertion or string comparison helper.
+  When an ONNX model is loaded whose operator attributes include an unterminated
+  string, the runtime reads beyond the end of the attribute buffer.  The issue
+  was reported to Microsoft and patched in a subsequent ONNX Runtime release.
+
+references:
+  - "https://hiddenlayer.com/sai-security-advisory/2024-02-onnx/"
