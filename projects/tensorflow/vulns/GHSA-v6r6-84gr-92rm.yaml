@@ -1,0 +1,45 @@
+id: GHSA-v6r6-84gr-92rm
+title: "Heap buffer overflow in AvgPool3DGrad via mismatched tensor shapes"
+project: tensorflow
+
+type: heap-buffer-overflow
+cwe: CWE-122
+cwe_secondary: [CWE-129]
+
+severity: HIGH
+cvss_v3_score: 7.6
+
+affected_versions:
+  - "< 2.4.2"
+  - "2.5.x < 2.5.0"
+fixed_versions:
+  - "2.4.2"
+  - "2.3.3"
+  - "2.2.3"
+  - "2.1.4"
+  - "2.5.0"
+affected_component: "tensorflow/core/kernels/avg_pool_3d_grad_op.cc"
+vulnerable_function: "AvgPool3DGradOp"
+trigger: >
+  Call tf.raw_ops.AvgPool3DGrad() with an `orig_input_shape` argument that
+  describes a smaller spatial volume than the `grad` tensor.  The gradient
+  accumulation loop writes into the output buffer indexed by orig_input_shape
+  coordinates, which lie outside the allocated region.
+impact: "crash; heap memory corruption; potential code execution"
+
+fix_commit: "https://github.com/tensorflow/tensorflow/commit/a2b743f6017d7b97af1fe49087ae15f0ac634373"
+github_advisory: GHSA-v6r6-84gr-92rm
+poc_available: true
+poc_notes: "Minimal Python PoC in advisory."
+
+description: >
+  The AvgPool3DGrad kernel accumulates gradients into an output buffer whose
+  size is determined by `orig_input_shape`.  If `orig_input_shape` specifies
+  dimensions smaller than those implied by the gradient tensor `grad`, the
+  kernel writes gradient values at offsets that exceed the output buffer
+  boundary, producing a heap-buffer-overflow.  The bug is present in
+  TensorFlow 2.1 through 2.4.
+
+references:
+  - "https://github.com/advisories/GHSA-v6r6-84gr-92rm"
+  - "https://github.com/tensorflow/tensorflow/security/advisories/GHSA-v6r6-84gr-92rm"
