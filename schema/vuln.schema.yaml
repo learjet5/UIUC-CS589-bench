@@ -1,0 +1,42 @@
+# Vulnerability Entry Schema
+# Each file under projects/<project>/vulns/ should conform to this schema.
+# Fields marked [required] must be present.
+
+id: string                     # [required] CVE-YYYY-NNNNN, GHSA-xxxx-xxxx-xxxx, or TALOS-YYYY-NNNN
+title: string                  # [required] Short human-readable title
+project: string                # [required] Project identifier matching the parent folder name
+
+# --- Vulnerability Classification ---
+type: string                   # [required] Primary bug class:
+                               #   heap-buffer-overflow | stack-buffer-overflow | use-after-free |
+                               #   out-of-bounds-read | out-of-bounds-write | integer-overflow |
+                               #   null-ptr-deref | memory-leak | use-of-uninitialized-value |
+                               #   type-confusion | write-what-where | command-injection |
+                               #   deserialization-rce | path-traversal | arbitrary-file-write
+cwe: string                    # [required] Primary CWE (e.g. CWE-122)
+cwe_secondary: [string]        # Additional CWEs if applicable
+
+# --- Severity ---
+severity: string               # [required] CRITICAL | HIGH | MEDIUM | LOW
+cvss_v3_score: float           # CVSS v3.1 base score (0.0 - 10.0)
+cvss_v3_vector: string         # Full CVSS v3.1 vector string
+
+# --- Affected Scope ---
+affected_versions: [string]    # [required] Version ranges (semver or prose)
+fixed_versions: [string]       # Versions where the fix is included
+affected_component: string     # [required] Source file or module path (relative to repo root)
+vulnerable_function: string    # Key function / method containing the flaw
+trigger: string                # How to trigger: e.g. "crafted model file", "malicious tensor input"
+impact: string                 # Observed / potential impact: crash | RCE | data-leak | DoS | arbitrary-write
+
+# --- Patch & PoC ---
+fix_commit: string             # URL or SHA of the fixing commit
+github_advisory: string        # GHSA-xxxx-xxxx-xxxx (if applicable)
+poc_available: bool            # Whether a public PoC exists
+poc_notes: string              # Notes on PoC availability / location
+
+# --- Description ---
+description: string            # [required] Detailed technical description of the vulnerability
+
+# --- References ---
+references: [string]           # [required] List of URLs (NVD, GitHub advisory, blog posts, etc.)
