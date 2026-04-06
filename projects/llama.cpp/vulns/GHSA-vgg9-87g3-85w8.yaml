@@ -1,0 +1,46 @@
+id: GHSA-vgg9-87g3-85w8
+title: "Integer overflow in GGUF parser leads to heap OOB read/write"
+project: llama.cpp
+
+type: integer-overflow
+cwe: CWE-190
+cwe_secondary: [CWE-122, CWE-125]
+
+severity: HIGH
+cvss_v3_score: 8.1
+
+affected_versions:
+  - "< b4057"
+fixed_versions:
+  - "b4057"
+affected_component: "ggml/src/gguf.cpp"
+vulnerable_function: "gguf_init_from_file"
+trigger: >
+  Supply a crafted .gguf model file whose tensor metadata specifies tensor
+  dimensions whose product overflows size_t when summed via ctx->size +=
+  ggml_nbytes(t).  The ctx->size variable wraps to a much smaller value than
+  required, causing a subsequent heap allocation to be undersized.  Writing
+  tensor data then overflows the allocation.
+impact: >
+  Heap out-of-bounds read and write during model loading;
+  potential arbitrary code execution when loading a malicious .gguf file.
+
+fix_commit: "https://github.com/ggml-org/llama.cpp/commit/b4057"
+github_advisory: GHSA-vgg9-87g3-85w8
+poc_available: true
+poc_notes: >
+  Crafted GGUF file required.  PoC construction demonstrated in the advisory.
+  Triggerable by any application that calls llama_load_model_from_file().
+
+description: >
+  The GGUF model parser in llama.cpp accumulates total tensor size via
+  ctx->size += ggml_nbytes(t).  There is no check to prevent ctx->size from
+  overflowing SIZE_MAX when model files declare a very large number of tensors
+  or tensors with very large shapes.  An attacker who controls a GGUF file
+  can cause ctx->size to wrap around to a small value, resulting in
+  under-allocation of the model context buffer.  Subsequent tensor data
+  writes then overflow this buffer, producing a heap OOB write.
+
+references:
+  - "https://github.com/ggml-org/llama.cpp/security/advisories/GHSA-vgg9-87g3-85w8"
+  - "https://github.com/advisories/GHSA-vgg9-87g3-85w8"
