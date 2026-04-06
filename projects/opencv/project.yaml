@@ -1,0 +1,23 @@
+name: OpenCV
+id: opencv
+repo: https://github.com/opencv/opencv
+language_primary: C++
+language_other: [Python, Java, CUDA]
+category: Computer Vision Library
+maintainer: OpenCV Foundation (Intel, Google, et al.)
+license: Apache-2.0
+stars_approx: 79000
+description: >
+  The world's most popular open-source computer vision library.  Written
+  almost entirely in C++, it provides image/video I/O, image processing,
+  classical ML, and deep neural network inference (DNN module).  It is a
+  foundational dependency in robotics, autonomous driving, and countless
+  AI-powered applications.
+vuln_count: 5
+notes: >
+  OpenCV's image codec decoders (JPEG, JPEG2000, HDR, PNG) and data
+  serialisation layer (XML/JSON/YAML) have historically been rich sources
+  of heap memory bugs.  The wechat_qrcode module added in 4.x introduced
+  additional memory-safety issues.  OpenCV is maintained by Google's
+  OSS-Fuzz, so many bugs are discovered via fuzzing before they receive
+  CVE numbers, but public CVEs exist for the most critical ones.
