@@ -1,0 +1,18 @@
+# Project Entry Schema
+# Each projects/<project>/project.yaml should conform to this schema.
+
+name: string              # [required] Official project name
+id: string                # [required] Folder identifier (snake_case or kebab-case)
+repo: string              # [required] Canonical GitHub (or other VCS) URL
+language_primary: string  # [required] Primary implementation language (C++ for all entries here)
+language_other: [string]  # Other languages used (Python bindings, etc.)
+category: string          # [required] One of:
+                          #   AI Training Framework | AI Inference Framework | AI Compiler |
+                          #   AI Library | LLM Inference Engine | Computer Vision Library |
+                          #   Speech Recognition Engine | Robotics/Embodied AI Framework
+maintainer: string        # [required] Organization or individual
+license: string           # SPDX license identifier (e.g. Apache-2.0, MIT)
+stars_approx: int         # Approximate GitHub stars (order of magnitude is fine)
+description: string       # [required] 1-3 sentence description
+vuln_count: int           # Number of vulnerability entries in the vulns/ subfolder
+notes: string             # Any additional notes relevant to the benchmark selection rationale
