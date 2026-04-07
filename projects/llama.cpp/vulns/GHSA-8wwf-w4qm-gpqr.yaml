@@ -26,10 +26,14 @@ impact: >
 
 fix_commit: "https://github.com/ggml-org/llama.cpp/commit/b4455"
 github_advisory: GHSA-8wwf-w4qm-gpqr
-poc_available: true
+poc_available: false
+poc_link: "https://github.com/ggml-org/llama.cpp/security/advisories/GHSA-8wwf-w4qm-gpqr"
 poc_notes: >
-  Requires a crafted .gguf model file.  Triggered at model load time before
-  any inference takes place.
+  GitHub Security Advisory (GHSA-8wwf-w4qm-gpqr / CVE-2025-49847) describes
+  the integer truncation bug in token_to_piece() but contains no embedded PoC
+  code and no external exploit link.  Advisory only describes the trigger
+  condition (GGUF model with token_text.size() > INT32_MAX); no ready-made
+  malicious file or exploit script has been published.
 
 description: >
   When llama.cpp loads a GGUF model file, it reads vocabulary token strings

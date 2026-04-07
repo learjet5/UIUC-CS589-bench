@@ -30,7 +30,12 @@ impact: "crash; heap memory corruption; potential code execution"
 fix_commit: "https://github.com/tensorflow/tensorflow/commit/a2b743f6017d7b97af1fe49087ae15f0ac634373"
 github_advisory: GHSA-v6r6-84gr-92rm
 poc_available: true
-poc_notes: "Minimal Python PoC in advisory."
+poc_link: "https://github.com/advisories/GHSA-v6r6-84gr-92rm"
+poc_notes: >
+  Python snippet embedded in the advisory (GHSA-v6r6-84gr-92rm / CVE-2021-29577)
+  calling tf.raw_ops.AvgPool3DGrad with orig_input_shape=[10,6,3,7,7], a
+  mismatched grad tensor of shape [3,1,1,1,1], and unit ksize/strides, triggering
+  heap buffer overflow due to missing dimension validation.
 
 description: >
   The AvgPool3DGrad kernel accumulates gradients into an output buffer whose

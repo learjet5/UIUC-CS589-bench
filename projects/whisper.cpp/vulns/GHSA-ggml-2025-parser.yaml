@@ -32,8 +32,10 @@ impact: >
 fix_commit: "Multiple incremental ggml commits"
 github_advisory: ""
 poc_available: false
+poc_link: ""
 poc_notes: >
-  OSS-Fuzz corpus entry.  Crafted GGUF file required; no standalone PoC.
+  OSS-Fuzz corpus entry.  Crafted GGUF file required; no standalone PoC or
+  exploit script has been published publicly.
 
 description: >
   The ggml GGUF model header parser reads n_dims and ne[] (dimension sizes)

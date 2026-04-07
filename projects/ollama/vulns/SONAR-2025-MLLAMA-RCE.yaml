@@ -1,0 +1,64 @@
+id: SONAR-2025-MLLAMA-RCE
+title: "Out-of-bounds write in mllama.cpp C++ backend leads to remote code execution"
+project: ollama
+
+# NOTE: No CVE or GHSA has been formally assigned as of April 2026.
+# Disclosed 2025-05-15 by SonarSource; provisional tracking ID used.
+
+type: out-of-bounds-write
+cwe: CWE-787
+cwe_secondary: [CWE-122, CWE-822]
+
+severity: CRITICAL
+cvss_v3_score: 9.8
+
+affected_versions:
+  - "< 0.7.0"
+fixed_versions:
+  - "0.7.0"
+affected_component: "llama/mllama.cpp"
+vulnerable_function: "mllama vision block initializer (intermediate_layers_indices parser)"
+trigger: >
+  Serve a crafted GGUF model file (< 1 KB) via /api/blobs and reference it
+  from /api/create using a Modelfile that targets the mllama multimodal backend.
+  The model's mllama.vision.intermediate_layers_indices metadata array contains
+  oversized index values that cause the C++ vector bit-write to access memory
+  past the end of the heap allocation.
+impact: >
+  Arbitrary heap bit-flip primitive escalating to full remote code execution:
+  demonstrated as a controlled jump to 0x4141414141414141 on non-PIE builds
+  and confirmed exploitable on PIE builds via vtable/GOT overwrite.
+
+fix_commit: "https://github.com/ollama/ollama/releases/tag/v0.7.0"
+github_advisory: ""
+poc_available: true
+poc_link: "https://www.sonarsource.com/blog/ollama-remote-code-execution-securing-the-code-that-runs-llms/"
+poc_notes: >
+  Sonar researchers crafted a kilobyte-sized malicious GGUF file demonstrating
+  controlled jump to 0x4141414141414141.  Full exploit technique described in
+  the blog: oversized indices in intermediate_layers_indices overwrite the
+  .synchronize function pointer in a ggml_backend vtable via bit-flip-to-1
+  primitives, enabling a stack pivot, ROP chain, and GOT overwrite of free()
+  with system().  Disclosed 2025-05-15 by SonarSource; fixed two days earlier
+  in v0.7.0 by replacing mllama.cpp entirely with a Go implementation.
+
+description: >
+  Ollama's mllama.cpp (C++ code written specifically for ollama, not part of
+  upstream llama.cpp) parses the mllama.vision.intermediate_layers_indices
+  metadata array from GGUF model files.  Each element is used as an index into
+  std::vector<bool> intermediate_layers to set a bit.  The code does not
+  validate that the index is within the vector's bounds.  std::vector<bool>
+  uses bit-packed heap storage, so an out-of-range index writes bits past the
+  end of the allocation.  Sonar researchers demonstrated that by choosing
+  indices that reach adjacent heap structures (specifically a ggml_backend
+  object whose vtable pointer follows the vector on the heap), an attacker
+  can overwrite the .synchronize function pointer.  Combined with a ROP chain
+  and a GOT overwrite of free() with system(), this achieves full remote code
+  execution.  The text prompt to the model is used as the shell command
+  argument.  Ollama v0.7.0 fixed this by replacing the C++ mllama backend with
+  a pure Go implementation.
+
+references:
+  - "https://www.sonarsource.com/blog/ollama-remote-code-execution-securing-the-code-that-runs-llms/"
+  - "https://cybersecuritynews.com/ollama-vulnerabilities-code-execution/"
+  - "https://gbhackers.com/ollama-flaws-let-hackers-run-any-code-using-malicious-model-files/"

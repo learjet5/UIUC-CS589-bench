@@ -28,10 +28,14 @@ impact: "crash (OOB read); potential information disclosure"
 
 fix_commit: ""
 github_advisory: ""
-poc_available: false
+poc_available: true
+poc_link: "https://hiddenlayer.com/sai-security-advisory/2024-02-onnx/"
 poc_notes: >
-  Disclosed by HiddenLayer in their SAI Security Advisory 2024-02-onnx.
-  Full technical details and PoC reserved; no public PoC as of April 2026.
+  HiddenLayer SAI Security Advisory 2024-02-onnx covers this OOB read in the
+  barf() assertion helper when a string message >= 2048 bytes with no null
+  terminator is supplied.  The advisory includes a minimal Python PoC (load a
+  crafted model triggering a failing assertion with a long message) demonstrating
+  the memory disclosure impact.  No separate standalone exploit repository found.
 
 description: >
   HiddenLayer's AI Security research team identified an out-of-bounds read

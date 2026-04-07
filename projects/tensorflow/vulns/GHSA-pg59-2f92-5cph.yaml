@@ -26,8 +26,14 @@ impact: "crash (heap-buffer-overflow); potential code execution"
 
 fix_commit: "https://github.com/tensorflow/tensorflow/commit/e3749a6d5f7d143895b2106d9aead8d814eb1e7a"
 github_advisory: GHSA-pg59-2f92-5cph
-poc_available: true
-poc_notes: "PoC in GitHub advisory."
+poc_available: false
+poc_link: "https://github.com/tensorflow/tensorflow/security/advisories/GHSA-pg59-2f92-5cph"
+poc_notes: >
+  No PoC code in the advisory (GHSA-pg59-2f92-5cph).  Describes that
+  SparseCountSparseOutput and RaggedCountSparseOutput lack the weight-shape
+  validation present in DenseCountSparseOutput, allowing heap OOB read when
+  fewer weights than values are supplied.  Patch in commit 3cbb917 (TF 2.3.1).
+  No standalone reproducer or embedded Python snippet was published.
 
 description: >
   The weighted variants of the sparse count ops (RaggedCountSparseOutput,

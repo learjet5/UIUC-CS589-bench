@@ -27,10 +27,11 @@ impact: >
 fix_commit: ""
 github_advisory: ""
 poc_available: false
+poc_link: "https://talosintelligence.com/vulnerability_reports/TALOS-2024-1914"
 poc_notes: >
-  Companion to TALOS-2024-1913 (same root cause in llama.cpp).
-  Cisco Talos reported the ggml bug as affecting both llama.cpp and
-  whisper.cpp since both share the gguf.cpp implementation.
+  Companion to TALOS-2024-1913 (same root cause in ggml shared between
+  llama.cpp and whisper.cpp).  Cisco Talos advisory includes ASAN crash output
+  but no standalone malicious GGUF file or exploit script was publicly released.
 
 description: >
   Cisco Talos discovered a heap-based buffer overflow in the GGUF model loader

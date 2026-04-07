@@ -27,9 +27,12 @@ impact: >
 fix_commit: ""
 github_advisory: ""
 poc_available: false
+poc_link: "https://talosintelligence.com/vulnerability_reports/TALOS-2024-1913"
 poc_notes: >
-  Cisco Talos advisory TALOS-2024-1913.  No public PoC; vulnerability
-  confirmed via fuzzing by Talos researchers.
+  Cisco Talos advisory (CVE-2024-21825) includes ASAN crash output as a crash
+  reproducer but no standalone malicious GGUF file or exploit script has been
+  released publicly.  Vulnerability was confirmed via fuzzing by Talos
+  researchers; no GitHub PoC repository identified.
 
 description: >
   The gguf_fread_str() function in ggml reads the length of a string field

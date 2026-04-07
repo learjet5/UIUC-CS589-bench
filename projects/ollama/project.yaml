@@ -1,0 +1,26 @@
+name: ollama
+id: ollama
+repo: https://github.com/ollama/ollama
+language_primary: Go
+language_other: [C++, C, CUDA, Metal]
+category: LLM Inference Engine
+maintainer: Ollama Inc.
+license: MIT
+stars_approx: 110000
+description: >
+  A local LLM serving runtime that wraps a vendored snapshot of llama.cpp
+  (C/C++) via CGo, exposing a REST API for model download, management, and
+  inference.  Despite being primarily Go, its inference hot-path runs entirely
+  inside bundled C/C++ code (ggml, mllama, mtmd) making it susceptible to the
+  full spectrum of C/C++ memory-safety vulnerabilities when parsing untrusted
+  GGUF model files or processing crafted API inputs.
+vuln_count: 4
+notes: >
+  Ollama's C/C++ attack surface falls into two categories: (1) the shared
+  ggml/llama.cpp GGUF parser, which processes attacker-supplied model files
+  without sufficient bounds checking; (2) model-specific C++ backends written
+  directly by ollama developers (e.g., mllama.cpp for multimodal Llama), which
+  are not part of upstream llama.cpp and have their own distinct memory bugs.
+  CVE-2024-39720 is the gateway vulnerability enabling the full Oligo "More
+  Models More ProbLLMs" exploit chain.  SONAR-2025-MLLAMA-RCE is the most
+  severe: a CRITICAL OOB write in ollama-authored C++ code achieving full RCE.

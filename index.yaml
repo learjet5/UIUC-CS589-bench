@@ -1,7 +1,7 @@
 # UIUC-CS589 Vulnerability Benchmark — Master Index
-# Last updated: 2026-04-06
+# Last updated: 2026-04-07
 #
-# 6 AI-ecosystem C/C++ projects, 30 vulnerability entries total.
+# 7 AI-ecosystem C/C++ projects, 34 vulnerability entries total.
 # See schema/ for field definitions.
 
 projects:
@@ -173,14 +173,39 @@ projects:
         severity: HIGH
         title: "Stack buffer overflow in whisper_full_parallel via oversized audio segment"
 
+  - id: ollama
+    name: ollama
+    repo: https://github.com/ollama/ollama
+    category: LLM Inference Engine
+    maintainer: Ollama Inc.
+    vuln_count: 4
+    vulns:
+      - id: CVE-2024-39720
+        type: out-of-bounds-read
+        severity: HIGH
+        title: "Out-of-bounds read in bundled llama.cpp GGUF parser via malformed model file"
+      - id: SONAR-2025-MLLAMA-RCE
+        type: out-of-bounds-write
+        severity: CRITICAL
+        title: "Out-of-bounds write in mllama.cpp C++ backend leads to remote code execution"
+      - id: CVE-2025-15514
+        type: null-ptr-deref
+        severity: HIGH
+        title: "Null pointer dereference in mtmd_helper_bitmap_init_from_buf via malformed image input"
+      - id: CVE-2024-12055
+        type: null-ptr-deref
+        severity: HIGH
+        title: "Null pointer dereference in GGUF model loader via crafted model file"
+
 # Summary statistics
+# Last updated: 2026-04-07
 stats:
-  total_projects: 6
-  total_vulns: 30
+  total_projects: 7
+  total_vulns: 34
   by_type:
     heap-buffer-overflow: 12
-    out-of-bounds-read: 4
-    out-of-bounds-write: 1
+    out-of-bounds-read: 5
+    out-of-bounds-write: 2
     use-after-free: 2
     integer-overflow: 1
     write-what-where: 1
@@ -188,13 +213,15 @@ stats:
     path-traversal: 2
     arbitrary-file-write: 1
     memory-leak: 1
-    null-ptr-deref: 1
+    null-ptr-deref: 3
     stack-buffer-overflow: 1
     other: 2
   by_severity:
-    CRITICAL: 2
-    HIGH: 21
+    CRITICAL: 3
+    HIGH: 24
     MEDIUM: 7
     LOW: 0
-  with_cve: 22
-  without_cve: 8
+  with_cve: 25
+  without_cve: 9
+  with_poc_link: 21
+  without_poc_link: 13

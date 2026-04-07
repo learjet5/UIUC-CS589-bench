@@ -28,9 +28,14 @@ impact: >
 fix_commit: "https://github.com/ggml-org/llama.cpp/commit/b4057"
 github_advisory: GHSA-vgg9-87g3-85w8
 poc_available: true
+poc_link: "https://huggingface.co/yuuoniy/overflow/blob/main/generate_poc.c"
 poc_notes: >
-  Crafted GGUF file required.  PoC construction demonstrated in the advisory.
-  Triggerable by any application that calls llama_load_model_from_file().
+  GitHub Security Advisory (GHSA-vgg9-87g3-85w8 / CVE-2025-53630) links
+  directly to a HuggingFace repo containing both a C-based PoC generator
+  (generate_poc.c) and a pre-built malicious GGUF file (overflow_poc.gguf) at
+  https://huggingface.co/yuuoniy/overflow — advisory includes step-by-step
+  build and run instructions that trigger a pointer overflow UBSan error and
+  heap OOB.
 
 description: >
   The GGUF model parser in llama.cpp accumulates total tensor size via

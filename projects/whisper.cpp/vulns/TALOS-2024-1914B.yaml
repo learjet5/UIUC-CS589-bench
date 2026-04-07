@@ -32,10 +32,11 @@ impact: >
 fix_commit: ""
 github_advisory: ""
 poc_available: false
+poc_link: ""
 poc_notes: >
-  Identified through code-path analysis of whisper_full_parallel.
-  Requires a very long audio input (>30 min) and a specific segment_size
-  configuration that mismatches the stack buffer size.
+  Identified through code-path analysis of whisper_full_parallel.  Requires a
+  very long audio input (>30 min) and a specific segment_size configuration that
+  mismatches the stack buffer size.  No public PoC or exploit code released.
 
 description: >
   The whisper_full_parallel() function in whisper.cpp divides audio samples
