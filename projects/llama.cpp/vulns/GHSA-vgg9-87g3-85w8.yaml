@@ -29,6 +29,14 @@ fix_commit: "https://github.com/ggml-org/llama.cpp/commit/b4057"
 github_advisory: GHSA-vgg9-87g3-85w8
 poc_available: true
 poc_link: "https://huggingface.co/yuuoniy/overflow/blob/main/generate_poc.c"
+poc_code: |
+  # Full C source at poc_link (too long to embed inline).
+  # Build: gcc generate_poc.c -o generate_poc && ./generate_poc overflow_poc.gguf
+  # Run:   llama-cli -m overflow_poc.gguf  (triggers UBSan pointer overflow + heap OOB)
+  #
+  # Key mechanism: crafts two F16 tensors whose padded nbytes sum overflows uint64_t,
+  # causing ctx->size to wrap to TARGET_CTX_SIZE_AFTER_OVERFLOW (1024 bytes).
+  # The undersized allocation is then overflowed when tensor data is read.
 poc_notes: >
   GitHub Security Advisory (GHSA-vgg9-87g3-85w8 / CVE-2025-53630) links
   directly to a HuggingFace repo containing both a C-based PoC generator

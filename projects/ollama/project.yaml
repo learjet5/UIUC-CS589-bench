@@ -14,7 +14,7 @@ description: >
   inside bundled C/C++ code (ggml, mllama, mtmd) making it susceptible to the
   full spectrum of C/C++ memory-safety vulnerabilities when parsing untrusted
   GGUF model files or processing crafted API inputs.
-vuln_count: 4
+vuln_count: 5
 notes: >
   Ollama's C/C++ attack surface falls into two categories: (1) the shared
   ggml/llama.cpp GGUF parser, which processes attacker-supplied model files

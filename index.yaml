@@ -1,7 +1,7 @@
 # UIUC-CS589 Vulnerability Benchmark — Master Index
 # Last updated: 2026-04-07
 #
-# 7 AI-ecosystem C/C++ projects, 34 vulnerability entries total.
+# 7 AI-ecosystem C/C++ projects, 35 vulnerability entries total.
 # See schema/ for field definitions.
 
 projects:
@@ -178,7 +178,7 @@ projects:
     repo: https://github.com/ollama/ollama
     category: LLM Inference Engine
     maintainer: Ollama Inc.
-    vuln_count: 4
+    vuln_count: 5
     vulns:
       - id: CVE-2024-39720
         type: out-of-bounds-read
@@ -196,18 +196,22 @@ projects:
         type: null-ptr-deref
         severity: HIGH
         title: "Null pointer dereference in GGUF model loader via crafted model file"
+      - id: CVE-2025-66959
+        type: integer-overflow
+        severity: HIGH
+        title: "Panic DoS via unchecked length in readGGUFString GGUF decoder"
 
 # Summary statistics
 # Last updated: 2026-04-07
 stats:
   total_projects: 7
-  total_vulns: 34
+  total_vulns: 35
   by_type:
     heap-buffer-overflow: 12
-    out-of-bounds-read: 5
+    out-of-bounds-read: 6
     out-of-bounds-write: 2
     use-after-free: 2
-    integer-overflow: 1
+    integer-overflow: 2
     write-what-where: 1
     deserialization-rce: 1
     path-traversal: 2
@@ -215,13 +219,15 @@ stats:
     memory-leak: 1
     null-ptr-deref: 3
     stack-buffer-overflow: 1
-    other: 2
+    other: 1
   by_severity:
     CRITICAL: 3
-    HIGH: 24
+    HIGH: 25
     MEDIUM: 7
     LOW: 0
-  with_cve: 25
+  with_cve: 26
   without_cve: 9
-  with_poc_link: 21
-  without_poc_link: 13
+  poc_available: 30
+  poc_with_inline_code: 18
+  poc_link_only: 12
+  no_poc: 5

